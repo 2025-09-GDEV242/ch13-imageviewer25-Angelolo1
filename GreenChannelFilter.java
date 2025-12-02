@@ -1,17 +1,17 @@
 import java.awt.Color;
 /**
  * A filter that converts the image to a grayscale version
- * based on the Red channel.
+ * based on the Green channel.
  *
  * @author Angelo Martino
  * @version 1.0
  */
-public class RedChannelFilter extends Filter
+public class GreenChannelFilter extends Filter
 {
     /**
-     * Constructor RedChannelFilter.
+     * Constructor GreenChannelFilter.
      */
-    public RedChannelFilter(String name)
+    public GreenChannelFilter(String name)
     {
         super(name);
     }

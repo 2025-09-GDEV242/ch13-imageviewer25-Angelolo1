@@ -255,6 +255,12 @@ public class ImageViewer
         filterList.add(new GrayScaleFilter("Grayscale"));
         filterList.add(new EdgeFilter("Edge Detection"));
         filterList.add(new FishEyeFilter("Fish Eye"));
+        filterList.add(new RedChannelFilter("Red Channel"));
+        filterList.add(new RedTintFilter("Red Tint"));
+        filterList.add(new GreenChannelFilter("Green Channel"));
+        filterList.add(new GreenTintFilter("Green Tint"));
+        filterList.add(new BlueChannelFilter("Blue Channel"));
+        filterList.add(new BlueTintFilter("Blue Tint"));
        
         return filterList;
     }
