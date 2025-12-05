@@ -261,6 +261,8 @@ public class ImageViewer
         filterList.add(new GreenTintFilter("Green Tint"));
         filterList.add(new BlueChannelFilter("Blue Channel"));
         filterList.add(new BlueTintFilter("Blue Tint"));
+        filterList.add(new WarholFilter("Warhol Filter"));
+        filterList.add(new WarholMirrorFilter("Warhol-Mirror Filter"));
        
         return filterList;
     }

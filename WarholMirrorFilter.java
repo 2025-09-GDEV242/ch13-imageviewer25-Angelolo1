@@ -12,9 +12,9 @@ public class WarholMirrorFilter extends Filter
     /**
      * Constructor for objects of class WarholMirrorFilter
      */
-    public WarholMirrorFilter()
+    public WarholMirrorFilter(String name)
     {
-        super("Flipped Warhol Filter");
+        super(name);
     }
 
     public void apply(OFImage image)
@@ -52,5 +52,62 @@ public class WarholMirrorFilter extends Filter
         
         // Mirror the tinted images directly in loops
         // Top-right: horizontal mirror (swap across vertical center)
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+               Color temp = topRight.getPixel(x, y);
+               topRight.setPixel(x, y, topRight.getPixel(halfWidth - 1 - x, y));
+               topRight.setPixel(x, halfWidth - 1 - y, temp);
+            }
+        }
+        
+        // Bottom-left: vertical mirror (swap across horizontal center)
+        for (int y = 0; y < halfHeight / 2; y++) {
+            for (int x = 0; x < halfWidth; x++) {
+               Color temp = bottomLeft.getPixel(x, y);
+               bottomLeft.setPixel(x, y, bottomLeft.getPixel(x, halfHeight - 1 - y));
+               bottomLeft.setPixel(x, halfHeight - 1 - y, temp);
+            }
+        }
+        
+        //Bottom-right: horizontal + vertical mirror
+        for (int y = 0; y < halfHeight / 2; y++) {
+            for (int x = 0; x < halfWidth; x++) {
+               int oppX = halfWidth - 1 - x;
+               int oppY = halfHeight -1 - y;
+                
+               Color temp = bottomRight.getPixel(x, y);
+               bottomLeft.setPixel(x, y, bottomRight.getPixel(oppX, oppY));
+               bottomLeft.setPixel(oppX, oppY, temp);
+               
+               Color temp2 = bottomRight.getPixel(x, oppY);
+               bottomLeft.setPixel(x, oppY, bottomRight.getPixel(oppX, y));
+               bottomLeft.setPixel(oppX, y, temp);
+            }
+        }
+        
+        // Copy quarters into result
+        OFImage result = new OFImage(width, height);
+        copyImage(topLeft, result, 0, 0);
+        copyImage(topRight, result, halfWidth, 0);
+        copyImage(bottomLeft, result, 0, halfHeight);
+        copyImage(bottomRight, result, halfWidth, halfHeight);
+        
+        // Copy back to original image
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                image.setPixel(x, y, result.getPixel(x, y));
+            }
+        }
+    }
+    
+    private void copyImage(OFImage src, OFImage dest, int startX, int startY)
+    {
+        int w = src.getWidth();
+        int h = src.getHeight();
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                dest.setPixel(startX + x, startY + y, src.getPixel(x, y));
+            }
+        }
     }
 }

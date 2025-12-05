@@ -11,9 +11,9 @@ public class WarholFilter extends Filter
     /**
      * Constructor for WarholFilter
      */
-    public WarholFilter()
+    public WarholFilter(String name)
     {
-        super("Warhol Filter");
+        super(name);
     }
 
     /**
