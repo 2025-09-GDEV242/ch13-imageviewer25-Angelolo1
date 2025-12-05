@@ -46,47 +46,19 @@ public class WarholMirrorFilter extends Filter
         }
         
         // Apply existing tint filters
-        new RedTintFilter("Red Tint").apply(topRight);
-        new GreenTintFilter("Green Tint").apply(bottomLeft);
-        new BlueTintFilter("Blue Tint").apply(bottomRight);
+        new RedTintFilter("red").apply(topRight);
+        new GreenTintFilter("green").apply(bottomLeft);
+        new BlueTintFilter("blue").apply(bottomRight);
         
-        // Mirror the tinted images directly in loops
-        // Top-right: horizontal mirror (swap across vertical center)
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
-               Color temp = topRight.getPixel(x, y);
-               topRight.setPixel(x, y, topRight.getPixel(halfWidth - 1 - x, y));
-               topRight.setPixel(x, halfWidth - 1 - y, temp);
-            }
-        }
-        
-        // Bottom-left: vertical mirror (swap across horizontal center)
-        for (int y = 0; y < halfHeight / 2; y++) {
-            for (int x = 0; x < halfWidth; x++) {
-               Color temp = bottomLeft.getPixel(x, y);
-               bottomLeft.setPixel(x, y, bottomLeft.getPixel(x, halfHeight - 1 - y));
-               bottomLeft.setPixel(x, halfHeight - 1 - y, temp);
-            }
-        }
-        
-        //Bottom-right: horizontal + vertical mirror
-        for (int y = 0; y < halfHeight / 2; y++) {
-            for (int x = 0; x < halfWidth; x++) {
-               int oppX = halfWidth - 1 - x;
-               int oppY = halfHeight -1 - y;
-                
-               Color temp = bottomRight.getPixel(x, y);
-               bottomLeft.setPixel(x, y, bottomRight.getPixel(oppX, oppY));
-               bottomLeft.setPixel(oppX, oppY, temp);
-               
-               Color temp2 = bottomRight.getPixel(x, oppY);
-               bottomLeft.setPixel(x, oppY, bottomRight.getPixel(oppX, y));
-               bottomLeft.setPixel(oppX, y, temp);
-            }
-        }
+        // Apply required mirrors
+        mirrorHorizontal(topRight);
+        mirrorVertical(bottomLeft);
+        mirrorHorizontal(bottomRight);
+        mirrorVertical(bottomRight);
         
         // Copy quarters into result
         OFImage result = new OFImage(width, height);
+        
         copyImage(topLeft, result, 0, 0);
         copyImage(topRight, result, halfWidth, 0);
         copyImage(bottomLeft, result, 0, halfHeight);
@@ -96,6 +68,34 @@ public class WarholMirrorFilter extends Filter
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 image.setPixel(x, y, result.getPixel(x, y));
+            }
+        }
+    }
+    
+    private void mirrorHorizontal(OFImage img)
+    {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w / 2; x++) {
+                Color temp = img.getPixel(x,y);
+                img.setPixel(x, y, img.getPixel(w - 1 - x, y));
+                img.setPixel(w - 1 - x, y, temp);
+            }
+        }
+    }
+    
+    private void mirrorVertical(OFImage img)
+    {
+        int w = img.getWidth();
+        int h = img.getHeight();
+        
+        for (int y = 0; y < h / 2; y++) {
+            for (int x = 0; x < w; x++) {
+                Color temp = img.getPixel(x,y);
+                img.setPixel(x, y, img.getPixel(x, h - 1 - y));
+                img.setPixel(x, h - 1 - y, temp);
             }
         }
     }

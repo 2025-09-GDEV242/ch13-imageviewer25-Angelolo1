@@ -72,6 +72,7 @@ public class WarholFilter extends Filter
     {
         int w = src.getWidth();
         int h = src.getHeight();
+        
         for (int y = 0; y < h; y++) {
             for (int x = 0; x < w; x++) {
                 dest.setPixel(startX + x, startY + y, src.getPixel(x, y));
